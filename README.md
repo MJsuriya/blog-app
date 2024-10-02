@@ -1,3 +1,7 @@
 # blog-app
 
-This is a sample application to understand how a blog page is working in simple terms."# blog-app" 
+This is a sample application designed to demonstrate the basic functionality of a blog page.
+
+# static-blog-part-I
+
+This branch contains updates that introduce static blog content, which is read from a TypeScript file.
