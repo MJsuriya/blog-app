@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { getAllSlugs, getPostData } from "../../app/lib/posts";
 import Link from "next/link";
 import Image from "next/image";

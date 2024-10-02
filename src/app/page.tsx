@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
