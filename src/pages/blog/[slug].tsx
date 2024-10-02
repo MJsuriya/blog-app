@@ -1,27 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { getAllSlugs, getPostData } from "../../app/lib/posts";
 import Link from "next/link";
-import Image from "next/image";
+import { performRequest } from "@/app/lib/datocms";
+import { Image, StructuredText } from "react-datocms";
 
 export default function BlogPostView(props: any) {
   const { postData } = props;
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 font-[family-name:var(--font-geist-sans)]">
       <main className="max-w-2xl w-full flex flex-col items-center gap-8 bg-white shadow-lg rounded-lg p-8">
-        <Image
-          src={postData.coverImage}
-          alt={postData.title}
-          width={500}
-          height={500}
-          
-        />
-
+      <Image data={postData.coverImage.responsiveImage} />
         <h1 className="text-3xl font-bold text-center">{postData.title}</h1>
         <p className="text-gray-600 text-center">
-          {postData.author} / {postData.publishDate}
+          {postData.author.name} / {postData.publishedDate}
         </p>
-        <p className="text-gray-800">{postData.content}</p>
+        {/* <p className="text-gray-800">{postData.content}</p> */}
+        <StructuredText
+          data={postData.content}
+          renderBlock={({ record }) => {
+            switch (record.__typename) {
+              case "ImageblockRecord":                
+                return <Image data={(record.blogDescriptionImage as any).responsiveImage} />;
+              default:
+                return null;
+            }
+          }}
+        />
         <div className="mt-12 w-full">
           <Link
             href="/"
@@ -35,21 +39,93 @@ export default function BlogPostView(props: any) {
   );
 }
 
-export const getStaticPaths = () => {
-  const paths = getAllSlugs();
+const PATHS_QUERY = `
+query MyQuery {
+  allArticles {
+    slug
+  }
+}
+`;
+
+export const getStaticPaths = async() => {
+  const slugQuery:any = await performRequest(PATHS_QUERY);
+
+  const paths: any[] = [];
+  slugQuery.allArticles.map((p: any) => paths.push(`/blog/${p.slug}`));
+
   return {
     paths,
     fallback: false,
   };
 };
 
-export const getStaticProps = ({ params }: any) => {
-  console.log("here priting slug", params);
-  const postData = getPostData(params.slug);
+const ARTICLE_QUERY = `
+query MyQuery($slug: String) {
+  article(filter: {slug: {eq: $slug}}) {
+    author {
+      name
+    }
+    content {
+      value
+      blocks {
+        __typename
+        ... on ImageblockRecord {
+          id
+          blogDescriptionImage { 
+          	responsiveImage {
+              width
+              webpSrcSet
+              title
+              srcSet
+              src
+              sizes
+              height
+              bgColor
+              base64
+              aspectRatio
+              alt
+          	}
+          }
+        }
+      }
+    }
+    coverImage {
+      responsiveImage {
+        width
+        webpSrcSet
+        title
+        srcSet
+        src
+        sizes
+        height
+        bgColor
+        base64
+        aspectRatio
+        alt
+      }
+    }
+    id
+    publishedDate
+    slug
+    title
+  }
+}
+`;
+export const getStaticProps = async({ params }: any) => {
+  // console.log('slug received is', params)
 
-  return {
-    props: {
-      postData,
-    },
-  };
+    // const data = await performRequest(ARTICLE_QUERY);
+    const data = await performRequest(
+      ARTICLE_QUERY,
+      {
+        variables: {slug: params.slug}
+      }      
+    );
+    return {
+      props: {
+        postData: (data as { article: any }).article
+      },
+      revalidate: 120,
+    };
+ 
 };
