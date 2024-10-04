@@ -71,7 +71,7 @@ const BlogPostPreview = (props: any) => {
       </h2>
       <div className="text-sm">{data.publishedDate}</div>
       <p className="text-base text-justify mt-2">{data.excerpt}</p>
-      <div className="font-semibold text-right"> - {data.author.name}</div>
+      <div className="font-semibold text-right mb-10"> - {data.author.name}</div>
     </div>
   );
 };
