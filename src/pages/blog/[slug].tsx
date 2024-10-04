@@ -3,48 +3,55 @@
 import Link from "next/link";
 import { performRequest } from "@/app/lib/datocms";
 import { Image, StructuredText } from "react-datocms";
+import "../../app/globals.css"
 
 export default function BlogPostView(props: any) {
   const { postData } = props;
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      <Image
-        data={postData.coverImage.responsiveImage}
-        className="w-full h-auto"
-      />
-      <h1 className="text-3xl font-bold text-center mt-8">{postData.title}</h1>
-      <p className="text-gray-600 text-center mt-4">
-        {postData.author.name} / {postData.publishedDate}
-      </p>
-      <div className="mt-8 prose prose-lg mx-auto">
-        <StructuredText
-          data={postData.content}
-          renderBlock={({ record }) => {
-            switch (record.__typename) {
-              case "ImageblockRecord":
-                return (
-                  <Image
-                    data={(record.blogDescriptionImage as any).responsiveImage}
-                    className="w-full h-auto my-8"
-                  />
-                );
-              default:
-                return null;
-            }
-          }}
+    <div className="min-h-screen bg-gray-100 py-12">
+      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <Image
+          data={postData.coverImage.responsiveImage}
+          className="w-full h-auto"
         />
-      </div>
-      <div className="mt-12">
-        <Link
-          href="/"
-          className="text-blue-600 hover:text-blue-800 transition-colors"
-        >
-          ⬅️&nbsp;&nbsp;Back to the frontpage
-        </Link>
+        <div className="px-6 py-8">
+          <h1 className="text-3xl font-bold text-center">{postData.title}</h1>
+          <p className="text-gray-600 text-center mt-4">
+            {postData.author.name} / {postData.publishedDate}
+          </p>
+          <div className="mt-8 prose prose-lg mx-auto">
+            <StructuredText
+              data={postData.content}
+              renderBlock={({ record }) => {
+                switch (record.__typename) {
+                  case "ImageblockRecord":
+                    return (
+                      <Image
+                        data={(record.blogDescriptionImage as any).responsiveImage}
+                        className="w-full h-auto my-8"
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              }}
+            />
+          </div>
+          <div className="mt-12 text-center">
+            <Link
+              href="/"
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              ⬅️&nbsp;&nbsp;Back to the frontpage
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+// ... rest of the file remains unchanged ...
 
 const PATHS_QUERY = `
 query MyQuery {
