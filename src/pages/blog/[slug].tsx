@@ -7,35 +7,50 @@ import { Image, StructuredText } from "react-datocms";
 export default function BlogPostView(props: any) {
   const { postData } = props;
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-8 font-[family-name:var(--font-geist-sans)]">
-      <main className="max-w-2xl w-full flex flex-col items-center gap-8 bg-white shadow-lg rounded-lg p-8">
-      <Image data={postData.coverImage.responsiveImage} />
-        <h1 className="text-3xl font-bold text-center">{postData.title}</h1>
-        <p className="text-gray-600 text-center">
-          {postData.author.name} / {postData.publishedDate}
-        </p>
-        {/* <p className="text-gray-800">{postData.content}</p> */}
-        <StructuredText
-          data={postData.content}
-          renderBlock={({ record }) => {
-            switch (record.__typename) {
-              case "ImageblockRecord":                
-                return <Image data={(record.blogDescriptionImage as any).responsiveImage} />;
-              default:
-                return null;
-            }
-          }}
-        />
-        <div className="mt-12 w-full">
-          <Link
-            href="/"
-            className="text-blue-600 hover:text-blue-800 transition-colors"
-          >
-            ⬅️&nbsp;&nbsp;Back to the frontpage
-          </Link>
+    <>
+      <div className="min-h-screen flex justify-center items-center bg-gray-100">
+        <div className="w-full max-w-2xl mx-auto px-4 py-8 bg-white shadow-lg rounded-lg">
+          <Image
+            data={postData.coverImage.responsiveImage}
+            className="w-full h-auto"
+          />
+          <h1 className="text-3xl font-bold text-center mt-8">
+            {postData.title}
+          </h1>
+          <p className="text-gray-600 text-center mt-4">
+            {postData.author.name} / {postData.publishedDate}
+          </p>
+          <div className="mt-8 prose prose-lg mx-auto">
+            <StructuredText
+              data={postData.content}
+              renderBlock={({ record }) => {
+                switch (record.__typename) {
+                  case "ImageblockRecord":
+                    return (
+                      <Image
+                        data={
+                          (record.blogDescriptionImage as any).responsiveImage
+                        }
+                        className="w-full h-auto my-8"
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              }}
+            />
+          </div>
+          <div className="mt-12">
+            <Link
+              href="/"
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              ⬅️&nbsp;&nbsp;Back to the frontpage
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -47,8 +62,8 @@ query MyQuery {
 }
 `;
 
-export const getStaticPaths = async() => {
-  const slugQuery:any = await performRequest(PATHS_QUERY);
+export const getStaticPaths = async () => {
+  const slugQuery: any = await performRequest(PATHS_QUERY);
 
   const paths: any[] = [];
   slugQuery.allArticles.map((p: any) => paths.push(`/blog/${p.slug}`));
@@ -111,21 +126,17 @@ query MyQuery($slug: String) {
   }
 }
 `;
-export const getStaticProps = async({ params }: any) => {
+export const getStaticProps = async ({ params }: any) => {
   // console.log('slug received is', params)
 
-    // const data = await performRequest(ARTICLE_QUERY);
-    const data = await performRequest(
-      ARTICLE_QUERY,
-      {
-        variables: {slug: params.slug}
-      }      
-    );
-    return {
-      props: {
-        postData: (data as { article: any }).article
-      },
-      revalidate: 120,
-    };
- 
+  // const data = await performRequest(ARTICLE_QUERY);
+  const data = await performRequest(ARTICLE_QUERY, {
+    variables: { slug: params.slug },
+  });
+  return {
+    props: {
+      postData: (data as { article: any }).article,
+    },
+    revalidate: 120,
+  };
 };

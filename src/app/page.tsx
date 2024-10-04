@@ -43,22 +43,19 @@ export default async function Home() {
   // console.log(data.allArticles.length)
   // const posts = getAllPosts();
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <div className="flex flex-col gap-8 items-center justify-center min-h-screen">
         <Head>
-          <title>Cooking with Tuomo</title>
+          <title>Blog App</title>
         </Head>
         <div>
-          <h1>Cooking w/ Tuomo</h1>
+          <h1 className="text-3xl font-medium">Blog App using Headless CMS</h1>
         </div>
         <div>
           {data.allArticles.map((p: any) => (
             <BlogPostPreview key={p.id} data={p} />
           ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center"></footer>
-    </div>
+      </div>
   );
 }
 
@@ -67,14 +64,14 @@ const BlogPostPreview = (props: any) => {
   return (
     <div>
       <Image data={data.coverImage.responsiveImage} />
-      <h2>
+      <h2 className="text-2xl font-medium mt-4">
         <Link href={`/blog/${data.slug}`}>
           {data.title}
         </Link>
       </h2>
-      <div>{data.publishedDate}</div>
-      <p>{data.excerpt}</p>
-      <div style={{ fontWeight: "bold" }}>{data.author.name}</div>
+      <div className="text-sm">{data.publishedDate}</div>
+      <p className="text-base text-justify mt-2">{data.excerpt}</p>
+      <div className="font-semibold text-right"> - {data.author.name}</div>
     </div>
   );
 };
