@@ -48,7 +48,7 @@ export default async function Home() {
           <title>Blog App</title>
         </Head>
         <div>
-          <h1 className="text-3xl font-medium">Blog App using Headless CMS</h1>
+          <h1 className="text-3xl font-medium mt-5">Blog App using Headless CMS</h1>
         </div>
         <div>
           {data.allArticles.map((p: any) => (
