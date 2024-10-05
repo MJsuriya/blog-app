@@ -3,50 +3,58 @@
 import Link from "next/link";
 import { performRequest } from "@/app/lib/datocms";
 import { Image, StructuredText } from "react-datocms";
-import "../../app/globals.css"
+import "../../app/globals.css";
+import { Header } from "@/app/components/Header/header";
+import { Footer } from "@/app/components/Footer/footer";
 
 export default function BlogPostView(props: any) {
   const { postData } = props;
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
-      <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <Image
-          data={postData.coverImage.responsiveImage}
-          className="w-full h-auto"
-        />
-        <div className="px-6 py-8">
-          <h1 className="text-3xl font-bold text-center">{postData.title}</h1>
-          <p className="text-gray-600 text-center mt-4">
-            {postData.author.name} / {postData.publishedDate}
-          </p>
-          <div className="mt-8 prose prose-lg mx-auto">
-            <StructuredText
-              data={postData.content}
-              renderBlock={({ record }) => {
-                switch (record.__typename) {
-                  case "ImageblockRecord":
-                    return (
-                      <Image
-                        data={(record.blogDescriptionImage as any).responsiveImage}
-                        className="w-full h-auto my-8"
-                      />
-                    );
-                  default:
-                    return null;
-                }
-              }}
-            />
-          </div>
-          <div className="mt-12 text-center">
-            <Link
-              href="/"
-              className="text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              ⬅️&nbsp;&nbsp;Back to the frontpage
-            </Link>
+    <div className="h-screen flex flex-col w-full">
+    <Header/>
+      <div className="bg-gray-100">
+        <div className="max-w-[70%] mx-auto bg-gray-100 border-slate-300 shadow-sm overflow-hidden p-8">
+          <Image
+            data={postData.coverImage.responsiveImage}
+            className="items-center"
+          />
+          <div className="py-8">
+            <h1 className="text-3xl font-bold">{postData.title}</h1>
+            <p className="text-gray-600 mt-4">
+              {postData.author.name} | {postData.publishedDate}
+            </p>
+            <div className="mt-8 prose prose-lg mx-auto">
+              <StructuredText
+                data={postData.content}
+                renderBlock={({ record }) => {
+                  switch (record.__typename) {
+                    case "ImageblockRecord":
+                      return (
+                        <Image
+                          data={
+                            (record.blogDescriptionImage as any).responsiveImage
+                          }
+                          className="w-full h-auto my-8"
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                }}
+              />
+            </div>
+            <div className="mt-12 text-right">
+              <Link
+                href="/"
+                className="text-blue-600 hover:text-blue-800 transition-colors"
+              >
+                ⬅️&nbsp;Back To Home
+              </Link>
+            </div>
           </div>
         </div>
       </div>
+      <Footer/>
     </div>
   );
 }
