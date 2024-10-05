@@ -43,14 +43,11 @@ export default async function Home() {
   // console.log(data.allArticles.length)
   // const posts = getAllPosts();
   return (
-      <div className="flex flex-col gap-8 items-center justify-center min-h-screen">
+      <div className="flex flex-col gap-8 items-center justify-center">
         <Head>
           <title>Blog App</title>
         </Head>
-        <div>
-          <h1 className="text-3xl font-medium mt-5">Blog App using Headless CMS</h1>
-        </div>
-        <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-8">
           {data.allArticles.map((p: any) => (
             <BlogPostPreview key={p.id} data={p} />
           ))}
@@ -62,7 +59,7 @@ export default async function Home() {
 const BlogPostPreview = (props: any) => {
   const { data } = props;
   return (
-    <div>
+    <div className="border-slate-300 border-2 p-4">
       <Image data={data.coverImage.responsiveImage} />
       <h2 className="text-2xl font-medium mt-4">
         <Link href={`/blog/${data.slug}`}>
@@ -71,7 +68,7 @@ const BlogPostPreview = (props: any) => {
       </h2>
       <div className="text-sm">{data.publishedDate}</div>
       <p className="text-base text-justify mt-2">{data.excerpt}</p>
-      <div className="font-semibold text-right mb-10"> - {data.author.name}</div>
+      <div className="font-semibold text-right"> - {data.author.name}</div>
     </div>
   );
 };
